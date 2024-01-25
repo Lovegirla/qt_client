@@ -10,14 +10,17 @@ CONFIG += c++11
 
 SOURCES += \
     client.cpp \
+    login.cpp \
     main.cpp \
     widget.cpp
 
 HEADERS += \
     client.h \
+    login.h \
     widget.h
 
 FORMS += \
+    login.ui \
     widget.ui
 
 TRANSLATIONS += \

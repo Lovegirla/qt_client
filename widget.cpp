@@ -16,6 +16,7 @@ Widget::Widget(QWidget *parent)
     connect(cli,SIGNAL(recv_text()),this,SLOT(recvFrombuffer()));//响应接收事件
     connect(ui->selectpushButton,SIGNAL(clicked()),this,SLOT(FileButton()));
     connect(ui->sendfilepushButton,SIGNAL(clicked()),this,SLOT(sendFileButton()));
+    connect(cli,SIGNAL(updateitem()),this,SLOT(updateviewlists()));
 
 }
 
@@ -34,7 +35,7 @@ void Widget::textTobuffer()
 
       QDateTime dateTime= QDateTime::currentDateTime();
       QString str = dateTime.toString("yyyy-MM-dd hh:mm:ss");
-      buffer = str + " client\n" + buffer;
+      buffer = str +username+"\n" + buffer;
    }
   ui->messagetextEdit->append(buffer);
   ui->sendtextEdit->clear();
@@ -45,7 +46,7 @@ void Widget::recvFrombuffer()
 
     QDateTime dateTime= QDateTime::currentDateTime();
     QString str = dateTime.toString("yyyy-MM-dd hh:mm:ss");
-    buffer = str + " server\n" + buffer;
+    buffer = str + cli->recvname + "\n" + buffer;
 
     ui->messagetextEdit->append(buffer);
 }
@@ -76,5 +77,19 @@ void Widget::sendFileButton()
 
     ui->messagetextEdit->append(temp);
 
+
+}
+void Widget::conectserver()
+{
+
+}
+
+void Widget::updateviewlists()
+{
+    QStringListModel *listmodel = new QStringListModel(cli->online_people);
+    ui->listView->setModel(listmodel);                   //设置模型到listview上
+
+    ui->listView->setMovement(QListView::Free);          //设置数据可以自由拖动
+    ui->listView->setSpacing(2);                         //设置数据的间距
 
 }

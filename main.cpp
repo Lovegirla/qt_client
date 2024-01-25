@@ -1,9 +1,13 @@
 ﻿#include "widget.h"
-
+#include "login.h"
 #include <QApplication>
 #include <QLocale>
 #include <QTranslator>
+#include <windows.h>
+void hello()
+{
 
+}
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -17,7 +21,19 @@ int main(int argc, char *argv[])
             break;
         }
     }
+
+    login l;
+    l.show();
+
     Widget w;
-    w.show();
+    QObject::connect(&l, &login::loginSuccessful, [&]() {
+        w.username = l.getusername();
+        w.ip = l.getip();
+        l.close();
+        w.show();
+        w.conectserver();
+        w.cli->username = w.username;
+    });
     return a.exec();
 }
+

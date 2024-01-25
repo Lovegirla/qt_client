@@ -7,13 +7,13 @@ client::client(QObject *parent)
 {
 
     socket = new QTcpSocket(parent);
-    socket->connectToHost(QHostAddress("192.168.31.129"), 6000);
+    socket->connectToHost(QHostAddress("172.25.236.123"), 6000);
     connect(socket, SIGNAL(readyRead()), this ,SLOT(readData()));
 }
 void client::send(QString msg)
 {
     //先发送文件头信息 文件名##文件大小
-    QString head = QString("%1##%2##").arg("msg").arg("msg");
+    QString head = QString("%1##%2##").arg("msg").arg(username);
     qDebug() << "filename: "<<head;
     //发送头部信息
     qint64 len = socket->write(head.toUtf8());
@@ -43,7 +43,25 @@ void client::readData()
 
     }
     else{
-        recv_buff = str;
+        QStringList list = str.split("##");
+        recv_buff = list[2];
+        recvname = list[1];
+        int flag = 1;
+        for(QString a : online_people)
+        {
+           flag =  QString::compare(recvname,a);
+           if(flag == 0)
+           {
+               break;
+           }
+
+        }
+        if(flag == 1)
+        {
+            online_people.push_back(recvname);
+            updateitem();
+        }
+
         qDebug() << "Received data: " << recv_buff;
         recv_text();
     }
